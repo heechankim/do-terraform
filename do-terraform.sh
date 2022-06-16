@@ -130,6 +130,16 @@ fi
 # -----------------------------------
 echo -e "${INFO}Current Directory: ${RESULT}`pwd`${EOC}"
 
+
+######################################################################################
+# If Command is init
+######################################################################################
+if [[ "$T_COMMAND" == "init" ]]; then
+  COMMAND="terraform $T_COMMAND"
+  eval $COMMAND
+  exit 0
+fi
+
 ######################################################################################
 # Create Command to be execute 
 ######################################################################################
@@ -166,11 +176,6 @@ fi
 #if [[ "$T_COMMAND" == "console" ]]; then
 #  COMMAND="$COMMAND -state=./terraform.tfstate.d/$WORKSPACE/terraform.tfstate"
 #fi
-
-if [[ "$T_COMMAND" == "init" ]]; then
-  COMMAND="terraform $T_COMMAND"
-fi
-
 
 ######################################################################################
 # Show Final command
@@ -210,11 +215,11 @@ case $yn in
       if [[ "$T_COMMAND" == "apply" || "$T_COMMAND" == "destroy" ]]; then
         COMMAND_LOG="$UTC [`echo $T_COMMAND | tr [:lower:] [:upper:]`]\$ $ORIGINAL_COMMAND"
 
-        if [[ "T_WORKSPACES" == "dev" ]]; then
+        if [[ "$T_WORKSPACES" == "dev" ]]; then
           echo $COMMAND_LOG >> $DEV_LOG_PATH
         fi
 
-        if [[ "T_WORKSPACES" == "prod" ]]; then
+        if [[ "$T_WORKSPACES" == "prod" ]]; then
           echo $COMMAND_LOG >> $PROD_LOG_PATH
         fi
       fi
