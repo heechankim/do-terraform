@@ -55,9 +55,9 @@ terraform workspace select dev
 terraform apply
 ```
 
-1. 현재 개발환경에서 인프라를 적용하기 위해 terraform workspace 와 함께 사용하여 모듈 내에서 `terraform.workspace` 값을 사용하여 인프라 배포
-2. 디렉터리 내의 `tfvars` 파일을 `-var-file` 옵션과 함께 일괄 적용
-3. 인프라에 반영되는 `apply` 와 `destroy` 커맨드를 logging 을 통해 추적
+2. 현재 개발환경에서 인프라를 적용하기 위해 terraform workspace 와 함께 사용하여 모듈 내에서 `terraform.workspace` 값을 사용하여 인프라 배포
+3. 디렉터리 내의 `tfvars` 파일을 `-var-file` 옵션과 함께 일괄 적용
+4. 인프라에 반영되는 `apply` 와 `destroy` 커맨드를 logging 을 통해 추적
 
 이 시나리오를 일관성 있게 적용하기 위해 do-terraform 스크립트를 작성하였습니다.
 
