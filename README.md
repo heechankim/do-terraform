@@ -99,13 +99,13 @@ do-terraform [OPTIONS] TARGET_PATH WORKSPACE COMMAND
 
 ## 옵션 사용 예
 
-1. `./prod/backend` 내의 테라폼 코드를 plan, 글로벌하게 적용되는 tfvars 파일 있음
+1. `./prod/backend` 내의 테라폼 코드를 plan, 프로젝트 전체에 적용되는 tfvars 파일 있음
     
     ```bash
     do-terraform -g ./global/g.tfvars ./prod/backend prod plan
     ```
     
-2. `./dev/database` 내의 테라폼 코드 apply, 글로벌하게 적용되는 tfvars 파일 없음, autoapprove 적용
+2. `./dev/database` 내의 테라폼 코드 apply, 프로젝트 전체에 적용되는 tfvars 파일 없음, autoapprove 적용
     
     ```bash
     do-terraform -y ./dev/database dev apply
@@ -115,4 +115,35 @@ do-terraform [OPTIONS] TARGET_PATH WORKSPACE COMMAND
     
     ```bash
     do-terraform -l my-logging-bucket ./dev/database dev apply
+    ```
+
+# 이슈
+
+## Workspace
+
+- 현재 사용 가능한 workspace : dev, prod
+- 설정 파일로 사용 가능한 workspace 를 지정하는 방식 구현 필요
+
+## Terraform Command
+
+- 현재 사용 가능한 command : plan, apply, destroy, output, init
+
+## logging
+
+- 인프라 구성에 반영되는 apply, destroy 커맨드는 do-terraform 스크립트를 통해 사용하는 대로 누적 logging 됨
+    
+    ```bash
+    2022-06-17T01:06:36KST [APPLY]$ ./do-terraform.sh -g global/g.tfvars -y -l autosql-infra-terraform-state dev/vpc/ dev apply
+    2022-06-17T01:13:43KST [APPLY]$ ./do-terraform.sh -g global/g.tfvars -y -l autosql-infra-terraform-state dev/vpc/ dev apply
+    2022-06-17T01:55:27KST [APPLY]$ ./do-terraform.sh -g global/g.tfvars -y -l autosql-infra-terraform-state dev/vpc/ dev apply
+    2022-06-17T01:55:38KST [APPLY]$ ./do-terraform.sh -g global/g.tfvars -y -l autosql-infra-terraform-state dev/frontend/ dev apply
+    2022-06-17T01:59:17KST [APPLY]$ ./do-terraform.sh -g global/g.tfvars -y -l autosql-infra-terraform-state dev/backend/ dev apply
+    ```
+    
+- 최종 반영된 인프라의 모습을 중복 없이 logging 하는 방법 필요
+    
+    ```bash
+    2022-06-17T01:55:27KST [APPLY]$ ./do-terraform.sh -g global/g.tfvars -y -l autosql-infra-terraform-state dev/vpc/ dev apply
+    2022-06-17T01:55:38KST [APPLY]$ ./do-terraform.sh -g global/g.tfvars -y -l autosql-infra-terraform-state dev/frontend/ dev apply
+    2022-06-17T01:59:17KST [APPLY]$ ./do-terraform.sh -g global/g.tfvars -y -l autosql-infra-terraform-state dev/backend/ dev apply
     ```
