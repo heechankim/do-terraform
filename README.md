@@ -1,16 +1,16 @@
 # 개요
 
-테라폼으로 흔히 개발 환경, 스테이징 환경, 프로덕션 환경으로 구분하여 인프라를 구성합니다. 환경을 분리하여 개발을 진행할 때, 개발 환경의 인프라가 프로덕션 환경의 인프라로 배포되는 상황을 피하기 위해 다음 두가지 Best Practice 를 사용하였습니다.
+테라폼으로 흔히 개발 환경, 스테이징 환경, 프로덕션 환경으로 구분하여 인프라를 구성합니다. 환경을 분리하여 개발을 진행할 때, 개발 환경의 인프라가 프로덕션 환경의 인프라로 배포되는 상황을 피하고자 다음 두 가지 Best Practice를 사용하였습니다.
 
-1. 모듈 디렉터리와 개발 환경 별 디렉터리들로 나누어 환경을 분리하며 개발
+1. 모듈 디렉터리와 개발 환경별로 디렉터리들로 나누어 환경을 분리하며 개발
 2. terraform workspace 로 환경을 분리하며 개발
 
 do-terraform 스크립트는 두 가지 방법을 혼용하여 인프라 환경을 분리하는 방법을 사용합니다.
 
-do-terraform 스크립트를 사용하여 적용된 모든 커맨드는 root 디렉터리에 logging 됩니다. github actions 과 함께 사용하기 위해 `-l <BUCKET NAME>` 옵션을 주어 AWS S3 Bucket 에 로그를 저장 할 수 있습니다.
+do-terraform 스크립트를 사용하여 적용된 모든 커맨드는 logs 디렉터리에 logging 됩니다. github actions 과 함께 사용하기 위해 `-l <BUCKET NAME>` 옵션을 주어 AWS S3 Bucket 에 로그를 저장 할 수 있습니다.
 
-1. 기본적으로 사용한 모든 커맨드는 `./logs/tf.log` 에 저장됨
-2. apply, destroy 를 사용하여 인프라에 적용되는 커맨드는 `./logs/dev-infra.log` 형식으로 저장 됨
+1. 기본적으로 사용한 모든 커맨드는 `./logs/tf.log` 에 저장
+2. apply, destroy 를 사용하여 인프라에 적용되는 커맨드는 `./logs/dev-infra.log` 형식으로 저장
 
 ## 가능한 문제 상황
 
@@ -30,7 +30,7 @@ cd ./live/backend
 terraform apply
 ```
 
-1. 환경 분리가 명확하게 되어 있지 않음.
+1. 환경 분리가 명확하게 되어 있지 않음
 2. terraform workspace 로 환경 분리시 매번 workspace 를 확인하기 어려움 → dev 환경의 인프라를 prod 에 apply 하는 상황이 발생할 수 있음
 
 ## 해결 방안
@@ -47,7 +47,7 @@ terraform apply
     |- backend
 ```
 
-개발 환경 별 디렉터리를 구조화하여 환경 분리를 명확하게 함
+1. 개발 환경별로 디렉터리를 구조화하여 환경 분리를 명확하게 함
 
 ```bash
 cd ./dev/backend
@@ -55,7 +55,9 @@ terraform workspace select dev
 terraform apply
 ```
 
-현재 개발환경에서 인프라를 적용하기 위해 terraform workspace 와 함께 사용하여 모듈 내에서 `terraform.workspace` 값을 사용하여 인프라 배포
+1. 현재 개발환경에서 인프라를 적용하기 위해 terraform workspace 와 함께 사용하여 모듈 내에서 `terraform.workspace` 값을 사용하여 인프라 배포
+2. 디렉터리 내의 `tfvars` 파일을 `-var-file` 옵션과 함께 일괄 적용
+3. 인프라에 반영되는 `apply` 와 `destroy` 커맨드를 logging 을 통해 추적
 
 이 시나리오를 일관성 있게 적용하기 위해 do-terraform 스크립트를 작성하였습니다.
 
