@@ -1,16 +1,19 @@
 # 개요
 
-테라폼으로 흔히 개발 환경, 스테이징 환경, 프로덕션 환경으로 구분하여 인프라를 구성합니다. 환경을 분리하여 개발을 진행할 때, 개발 환경의 인프라가 프로덕션 환경의 인프라로 배포되는 상황을 피하고자 다음 두 가지 Best Practice를 사용하였습니다.
+인프라를 구성할 때 개발 환경, 스테이징 환경, 프로덕션 환경으로 구분하여 인프라를 구성합니다. 테라폼으로 인프라 환경을 분리하여 개발을 진행할 때, 개발 환경의 인프라가 프로덕션 환경의 인프라로 배포되는 상황을 피하고자 다음 두 가지 Best Practice를 사용하였습니다.
 
 1. 모듈 디렉터리와 개발 환경별로 디렉터리들로 나누어 환경을 분리하며 개발
 2. terraform workspace 로 환경을 분리하며 개발
 
 do-terraform 스크립트는 두 가지 방법을 혼용하여 인프라 환경을 분리하는 방법을 사용합니다.
 
+
+
 do-terraform 스크립트를 사용하여 적용된 모든 커맨드는 logs 디렉터리에 logging 됩니다. github actions 과 함께 사용하기 위해 `-l <BUCKET NAME>` 옵션을 주어 AWS S3 Bucket 에 로그를 저장 할 수 있습니다.
 
 1. 기본적으로 사용한 모든 커맨드는 `./logs/tf.log` 에 저장
 2. apply, destroy 를 사용하여 인프라에 적용되는 커맨드는 `./logs/dev-infra.log` 형식으로 저장
+
 
 ## 가능한 문제 상황
 
@@ -32,6 +35,7 @@ terraform apply
 
 1. 환경 분리가 명확하게 되어 있지 않음
 2. terraform workspace 로 환경 분리시 매번 workspace 를 확인하기 어려움 → dev 환경의 인프라를 prod 에 apply 하는 상황이 발생할 수 있음
+
 
 ## 해결 방안
 
@@ -61,12 +65,17 @@ terraform apply
 
 이 시나리오를 일관성 있게 적용하기 위해 do-terraform 스크립트를 작성하였습니다.
 
+
+
 # 개발환경
 
 - Linux
 - BASH
 
+
+
 # 설치 및 삭제
+
 
 ## 설치
 
@@ -76,6 +85,7 @@ cd ./do-terraform
 bash ./install.sh
 ```
 
+
 ## 삭제
 
 ```bash
@@ -83,7 +93,10 @@ cd ./do-terraform
 bash ./uninstall.sh
 ```
 
+
+
 # 사용 방법
+
 
 ## 동작 방식
 ![do-terraform](https://user-images.githubusercontent.com/96629089/174828340-47f76505-45d6-4144-af78-434c70463e29.png)
@@ -91,11 +104,13 @@ bash ./uninstall.sh
 - Target Path 내에 있는 `*.tfvars` 파일은 커맨드 실행시 자동으로 `-var-file=./*.tfvars` 로 포함됨
 - Target Path, 워크스페이스, 커맨드는 필수 인자
 
+
 ## 커맨드
 
 ```bash
 do-terraform [OPTIONS] TARGET_PATH WORKSPACE COMMAND
 ```
+
 
 ## 옵션 사용 예
 
@@ -117,16 +132,21 @@ do-terraform [OPTIONS] TARGET_PATH WORKSPACE COMMAND
     do-terraform -l my-logging-bucket ./dev/database dev apply
     ```
 
+
+
 # 이슈
+
 
 ## Workspace
 
 - 현재 사용 가능한 workspace : dev, prod
 - 설정 파일로 사용 가능한 workspace 를 지정하는 방식 구현 필요
 
+
 ## Terraform Command
 
 - 현재 사용 가능한 command : plan, apply, destroy, output, init
+
 
 ## logging
 
