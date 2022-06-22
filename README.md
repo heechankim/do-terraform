@@ -2,7 +2,7 @@
 
 인프라를 구성할 때 개발 환경, 스테이징 환경, 프로덕션 환경으로 구분하여 인프라를 구성합니다. 테라폼으로 인프라 환경을 분리하여 개발을 진행할 때, 개발 환경의 인프라가 프로덕션 환경의 인프라로 배포되는 상황을 피하고자 다음 두 가지 Best Practice를 사용하였습니다.
 
-1. 모듈 디렉터리와 개발 환경별로 디렉터리들로 나누어 환경을 분리하며 개발
+1. 모듈 디렉터리와 개발 환경별로 디렉터리를 나누어 환경을 분리하며 개발
 2. terraform workspace 로 환경을 분리하며 개발
 
 do-terraform 스크립트는 두 가지 방법을 혼용하여 인프라 환경을 분리하는 방법을 사용합니다.
@@ -167,3 +167,9 @@ do-terraform [OPTIONS] TARGET_PATH WORKSPACE COMMAND
     2022-06-17T01:55:38KST [APPLY]$ ./do-terraform.sh -g global/g.tfvars -y -l autosql-infra-terraform-state dev/frontend/ dev apply
     2022-06-17T01:59:17KST [APPLY]$ ./do-terraform.sh -g global/g.tfvars -y -l autosql-infra-terraform-state dev/backend/ dev apply
     ```
+
+# TODO
+
+- 설정파일 지원
+- Github Actions 로 제작
+- 안정화 버전으로 Release
